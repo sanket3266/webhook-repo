@@ -32,7 +32,7 @@ class GitHubEventHandler:
             event['action'] = 'PUSH'
             event['to_branch'] = data['ref'].split('/')[-1]
 
-        elif 'pull_request' in data:
+        elif 'pull_request' in data and data['action']== 'opened':
             event['request_id'] = data['pull_request']['id']
             event['author'] = data['pull_request']['user']['login']
             event['action'] = 'PULL_REQUEST'
