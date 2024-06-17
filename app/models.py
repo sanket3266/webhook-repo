@@ -27,12 +27,15 @@ class GitHubEventHandler:
         }
 
         if 'pusher' in data:
+            print("##Push Request##")
             event['request_id'] = data['head_commit']['id']
             event['author'] = data['pusher']['name']
             event['action'] = 'PUSH'
             event['to_branch'] = data['ref'].split('/')[-1]
 
-        elif 'pull_request' in data and data['action']== 'opened':
+        elif 'pull_request' in data and data['action'] !='closed':
+            print("##Pull Request##")
+            
             event['request_id'] = data['pull_request']['id']
             event['author'] = data['pull_request']['user']['login']
             event['action'] = 'PULL_REQUEST'
