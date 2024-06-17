@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Webhook Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .event {
+            padding: 15px;
+            margin: 10px 0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .event:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+        .event:nth-child(even) {
+            background-color: #ececec;
+        }
+        .details {
+            font-size: 1rem;
+            color: #555;
+        }
+        .timestamp {
+            font-size: 0.875rem;
+            color: #888;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+            .event {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GitHub Webhook Events</h1>
+        <div id="events"></div>
+    </div>
+
+    <script>
+        async function fetchEvents() {
+            try {
+                const response = await fetch('/events');
+                const data = await response.json();
+                const eventsDiv = document.getElementById('events');
+                eventsDiv.innerHTML = '';
+                data.forEach(event => {
+                    const eventDiv = document.createElement('div');
+                    eventDiv.className = 'event';
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.className = 'details';
+                    let eventText = '';
+                    switch(event.action) {
+                        case 'PUSH':
+                            eventText = `${event.author} pushed to ${event.to_branch}`;
+                            break;
+                        case 'PULL_REQUEST':
+                            eventText = `${event.author} submitted a pull request from ${event.from_branch} to ${event.to_branch}`;
+                            break;
+                        case 'MERGE':
+                            eventText = `${event.author} merged branch ${event.from_branch} to ${event.to_branch}`;
+                            break;
+                    }
+                    detailsDiv.textContent = eventText;
+                    const timestampDiv = document.createElement('div');
+                    timestampDiv.className = 'timestamp';
+                    timestampDiv.textContent = new Date(event.timestamp).toLocaleString();
+                    eventDiv.appendChild(detailsDiv);
+                    eventDiv.appendChild(timestampDiv);
+                    eventsDiv.appendChild(eventDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        }
+
+        setInterval(fetchEvents, 15000);
+        fetchEvents();
+    </script>
+</body>
+</html>
