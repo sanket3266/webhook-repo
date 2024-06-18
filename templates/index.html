@@ -85,9 +85,37 @@
                             break;
                     }
                     detailsDiv.textContent = eventText;
+
+                    const eventDate = new Date(event.timestamp);
+                    const formattedDate = eventDate.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true,
+                        timeZone: 'UTC'
+                    });
+
+                    const ordinalSuffix = (day) => {
+                        switch (day % 10) {
+                            case 1:
+                                return `${day}st`;
+                            case 2:
+                                return `${day}nd`;
+                            case 3:
+                                return `${day}rd`;
+                            default:
+                                return `${day}th`;
+                        }
+                    };
+
+                    const dayWithSuffix = ordinalSuffix(eventDate.getUTCDate());
+
                     const timestampDiv = document.createElement('div');
                     timestampDiv.className = 'timestamp';
-                    timestampDiv.textContent = new Date(event.timestamp).toLocaleString();
+                    timestampDiv.textContent = `${dayWithSuffix} ${formattedDate} UTC`;
+
                     eventDiv.appendChild(detailsDiv);
                     eventDiv.appendChild(timestampDiv);
                     eventsDiv.appendChild(eventDiv);
