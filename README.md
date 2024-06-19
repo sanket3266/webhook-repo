@@ -39,16 +39,10 @@ This repository is designed to receive and display events from another repositor
 
 To containerize and run this project using Docker, follow these steps:
 
-1. **Build the Docker image**:
+**Build the Docker image and run**:
 
     ```sh
-    docker build -t webhook-repo .
-    ```
-
-2. **Run the Docker container**:
-
-    ```sh
-    docker run -p 5000:5000 webhook-repo
+    docker-compose up --build
     ```
 
 ### Dockerfile
