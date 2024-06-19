@@ -1,7 +1,6 @@
 from flask import request, jsonify, render_template
-from app import app, db
+from app import app
 from app.models import GitHubEventHandler, MongoDB
-from datetime import datetime
 
 @app.route('/webhook', methods=['POST'])
 def webhook():

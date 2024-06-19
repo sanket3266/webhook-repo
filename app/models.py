@@ -35,7 +35,6 @@ class GitHubEventHandler:
 
         elif 'pull_request' in data and data['action'] !='closed':
             print("##Pull Request##")
-            
             event['request_id'] = data['pull_request']['id']
             event['author'] = data['pull_request']['user']['login']
             event['action'] = 'PULL_REQUEST'
