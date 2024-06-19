@@ -39,16 +39,10 @@ This repository is designed to receive and display events from another repositor
 
 To containerize and run this project using Docker, follow these steps:
 
-1. **Build the Docker image**:
+**Build the Docker image and run**:
 
     ```sh
-    docker build -t webhook-repo .
-    ```
-
-2. **Run the Docker container**:
-
-    ```sh
-    docker run -p 5000:5000 webhook-repo
+    docker-compose up --build
     ```
 
 ### Dockerfile
@@ -56,26 +50,29 @@ To containerize and run this project using Docker, follow these steps:
 Here is the `Dockerfile` used for this project:
 
 ```dockerfile
-# Use an official Python runtime as a parent image
-FROM python:3.9-alpine
+# Use the official Python 3.9 slim image from the Docker Hub as the base image
+FROM python:3.9-slim
 
-# Set the working directory
+# Set the working directory in the container to /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy the requirements.txt file from the local machine to the container
+COPY requirements.txt requirements.txt
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install the Python dependencies specified in requirements.txt
+RUN pip install -r requirements.txt
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+# Copy all the files from the local machine's current directory to the container's /app directory
+COPY . .
 
-# Define environment variable
-ENV NAME webhook-repo
+# Set environment variables for the Flask application
+# FLASK_APP tells Flask the entry point of the application
+ENV FLASK_APP=run.py
+# FLASK_RUN_HOST sets the host to 0.0.0.0 to ensure the server is accessible from outside the container
+ENV FLASK_RUN_HOST=0.0.0.0
 
-# Run the application
-CMD ["python", "run.py"]
+# Specify the command to run the Flask application
+CMD ["flask", "run"]
 ```
 
 
