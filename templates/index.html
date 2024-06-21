@@ -87,34 +87,37 @@
                     detailsDiv.textContent = eventText;
 
                     const eventDate = new Date(event.timestamp);
-                    const formattedDate = eventDate.toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hour12: true,
-                        timeZone: 'UTC'
-                    });
+
+                    const formatDate = (date) => {
+                        const day = date.getUTCDate();
+                        const month = date.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+                        const year = date.getUTCFullYear();
+                        const time = date.toLocaleString('en-US', {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true,
+                            timeZone: 'UTC'
+                        });
+
+                        const dayWithSuffix = ordinalSuffix(day);
+                        return `${dayWithSuffix} ${month} ${year} - ${time} UTC`;
+                    };
 
                     const ordinalSuffix = (day) => {
+                        if (day > 3 && day < 21) return `${day}th`;
                         switch (day % 10) {
-                            case 1:
-                                return `${day}st`;
-                            case 2:
-                                return `${day}nd`;
-                            case 3:
-                                return `${day}rd`;
-                            default:
-                                return `${day}th`;
+                            case 1: return `${day}st`;
+                            case 2: return `${day}nd`;
+                            case 3: return `${day}rd`;
+                            default: return `${day}th`;
                         }
                     };
 
-                    const dayWithSuffix = ordinalSuffix(eventDate.getUTCDate());
-
+                    const formattedDate = formatDate(eventDate);
+                    
                     const timestampDiv = document.createElement('div');
                     timestampDiv.className = 'timestamp';
-                    timestampDiv.textContent = `${dayWithSuffix} ${formattedDate} UTC`;
+                    timestampDiv.textContent = formattedDate;
 
                     eventDiv.appendChild(detailsDiv);
                     eventDiv.appendChild(timestampDiv);
